@@ -1,3 +1,5 @@
+# bundle exec rspec ./spec/requests/api/v1/posters_request_spec.rb
+
 require 'rails_helper'
 
 describe "Posters API", type: :request do
@@ -32,6 +34,30 @@ describe "Posters API", type: :request do
     get '/api/v1/posters'
 
     expect(response).to be_successful
+
+    posters = JSON.parse(response.body, symbolize_names: true)
+
+    expect(posters.count).to eq(3)
+
+    posters.each do |poster|
+      expect(poster).to have_key(:id)
+      expect(poster[:id]).to be_a(String)
+
+      expect(poster[:attributes]).to have_key(:name)
+      expect(poster[:attributes][:name]).to be_a(String)
+
+      expect(poster[:attributes]).to have_key(:description)
+      expect(poster[:attributes][:description]).to be_a(String)
+
+      expect(poster[:attributes]).to have_key(:price)
+      expect(poster[:attributes][:price]).to be_a(Float)      
+
+      expect(poster[:attributes]).to have_key(:year)
+      expect(poster[:attributes][:year]).to be_an(Integer)
+
+      expect(poster[:attributes]).to have_key(:img_url)
+      expect(poster[:attributes][:img_url]).to be_a(String)
+    end
   end
 
   it "can create a new poster" do
