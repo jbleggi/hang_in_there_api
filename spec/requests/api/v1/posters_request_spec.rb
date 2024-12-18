@@ -37,9 +37,10 @@ describe "Posters API", type: :request do
 
     posters = JSON.parse(response.body, symbolize_names: true)
 
-    expect(posters.count).to eq(3)
+    expect(posters[:data].count).to eq(3)
 
-    posters.each do |poster|
+    # require 'pry'; binding.pry
+    posters[:data].each do |poster|
       expect(poster).to have_key(:id)
       expect(poster[:id]).to be_a(String)
 
@@ -155,5 +156,74 @@ describe "Posters API", type: :request do
     expect(response).to be_successful
     expect(poster.name).to_not eq(previous_name)
     expect(poster.name).to eq("PERSEVERENCE")
+  end
+
+  it "can sort by created_at, ascending" do
+    Poster.create!(
+      name: "DETERMINATION",
+      description: "Persistence is the key to failure.",
+      price: 99.00,
+      year: 2020,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1679237489023-4d6b9f7e8292"
+    )
+
+    Poster.create!(
+      name: "AMBITION",
+      description: "The climb is always steeper than it looks.",
+      price: 120.00,
+      year: 2019,
+      vintage: true,
+      img_url: "https://plus.unsplash.com/premium_photo-1672340957102-ecb87429dbf1"
+    )
+
+    Poster.create!(
+      name: "INSPIRATION",
+      description: "Dreams are made to be unattainable.",
+      price: 85.00,
+      year: 2021,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1680273494857-a8bf4c7d10e5"
+    )
+    
+    get '/api/v1/posters?sort=asc'
+
+    expect(response).to be_successful
+    expect(Poster.maximum("created_at")).to eq(Poster.order("created_at asc").pluck(:created_at).last)  
+  end
+
+  it "can sort by created_at, descending" do
+    Poster.create!(
+      name: "DETERMINATION",
+      description: "Persistence is the key to failure.",
+      price: 99.00,
+      year: 2020,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1679237489023-4d6b9f7e8292"
+    )
+
+    Poster.create!(
+      name: "AMBITION",
+      description: "The climb is always steeper than it looks.",
+      price: 120.00,
+      year: 2019,
+      vintage: true,
+      img_url: "https://plus.unsplash.com/premium_photo-1672340957102-ecb87429dbf1"
+    )
+
+    Poster.create!(
+      name: "INSPIRATION",
+      description: "Dreams are made to be unattainable.",
+      price: 85.00,
+      year: 2021,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1680273494857-a8bf4c7d10e5"
+    )
+    
+    get '/api/v1/posters?sort=desc'
+
+    # require 'pry'; binding.pry
+    expect(response).to be_successful
+    expect(Poster.minimum("created_at")).to eq(Poster.order("created_at desc").pluck(:created_at).last)  
   end
 end
