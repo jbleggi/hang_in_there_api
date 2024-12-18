@@ -135,4 +135,25 @@ describe "Posters API", type: :request do
     expect(Poster.count).to eq(0)
     expect{ Poster.find(poster.id) }.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  it "can update an existing poster" do
+    id = Poster.create(
+      name: "DETERMINATION",
+      description: "Persistence is the key to failure.",
+      price: 99.00,
+      year: 2020,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1679237489023-4d6b9f7e8292"
+    ).id
+    previous_name = Poster.last.name
+    poster_params = { name: "PERSEVERENCE" }
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/posters/#{id}", headers: headers, params: JSON.generate({poster: poster_params})
+    poster = Poster.find_by(id: id)
+
+    expect(response).to be_successful
+    expect(poster.name).to_not eq(previous_name)
+    expect(poster.name).to eq("PERSEVERENCE")
+  end
 end
