@@ -18,6 +18,22 @@ class Api::V1::PostersController < ApplicationController
     }
   end
 
+  def show
+    posterById = Poster.find(params[:id])
+
+    render json: {
+      type: "poster",
+      attributes: {
+        name: posterById.name,
+        description: posterById.description,
+        price: posterById.price,
+        year: posterById.year,
+        vintage: posterById.vintage,
+        img_url: posterById.img_url
+      }
+    }
+  end
+
   def create
     newPoster = Poster.new(poster_params)
 
@@ -45,6 +61,10 @@ class Api::V1::PostersController < ApplicationController
         }
       }
     end
+  end
+
+  def update
+    render json: Poster.update(params[:id], poster_params)
   end
 
   def destroy
