@@ -60,6 +60,38 @@ describe "Posters API", type: :request do
     end
   end
 
+  it "can get one poster by its id" do
+    id = Poster.create(
+      name: "DETERMINATION",
+      description: "Persistence is the key to failure.",
+      price: 99.00,
+      year: 2020,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1679237489023-4d6b9f7e8292"
+    ).id
+
+    get "/api/v1/posters/#{id}"
+
+    poster = JSON.parse(response.body, symbolize_names: true)
+
+    expect(response).to be_successful
+
+    expect(poster[:attributes]).to have_key(:name)
+    expect(poster[:attributes][:name]).to be_a(String)
+
+    expect(poster[:attributes]).to have_key(:description)
+    expect(poster[:attributes][:description]).to be_a(String)
+
+    expect(poster[:attributes]).to have_key(:price)
+    expect(poster[:attributes][:price]).to be_a(Float)      
+
+    expect(poster[:attributes]).to have_key(:year)
+    expect(poster[:attributes][:year]).to be_an(Integer)
+
+    expect(poster[:attributes]).to have_key(:img_url)
+    expect(poster[:attributes][:img_url]).to be_a(String)
+  end
+
   it "can create a new poster" do
     poster_params = {
       name: "DETERMINATION",
