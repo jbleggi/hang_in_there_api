@@ -222,8 +222,37 @@ describe "Posters API", type: :request do
     
     get '/api/v1/posters?sort=desc'
 
-    # require 'pry'; binding.pry
     expect(response).to be_successful
     expect(Poster.minimum("created_at")).to eq(Poster.order("created_at desc").pluck(:created_at).last)  
+  end
+
+  it "can specify a ‘name' query parameter" do   
+    Poster.create!(
+      "name": "TERRIBLE",
+        "description": "It's too awful to look at.",
+        "price": 15.00,
+        "year": 2022,
+        "vintage": true,
+        "img_url": "https://unsplash.com/photos/low-angle-of-hacker-installing-malicious-software-on-data-center-servers-using-laptop-9nk2antk4Bw"
+    )
+
+    Poster.create!(
+      "name": "DISASTER",
+      "description": "It's a mess and you haven't even started yet.",
+      "price": 28.00,
+      "year": 2016,
+      "vintage": false,
+      "img_url": "https://images.unsplash.com/photo-1485617359743-4dc5d2e53c89"
+  )
+  
+    get '/api/v1/posters?name=ter'
+
+    expect(response).to be_successful    
+    expect(Poster.all.count).to eq(2)
+
+    sortedPosters = Poster.all.sort_by { |poster| poster.name }
+
+    expect(sortedPosters.first.name).to eq('DISASTER')
+    expect(sortedPosters.last.name).to eq('TERRIBLE')    
   end
 end

@@ -1,11 +1,28 @@
 class Api::V1::PostersController < ApplicationController
   def index
+    if params[:sort] === 'desc' 
+      posters = Poster.all.order("created_at desc")
+    elsif params[:sort] === 'asc'
+      posters = Poster.all.order("created_at asc")
+    else 
+      posters = Poster.all
+    end
+
+    if params[:name]
+      posters_array = [];
+      Poster.all.each do |poster|
+        if poster.name.downcase().include?(params[:name])
+          posters_array.push(poster)
+        end
+      end
+      posters = posters_array.sort_by {|poster| poster.name }
+    end
+
     options = {}
     count = Poster.count
     options[:meta] = { count: count }
-    render json: PosterSerializer.new(Poster.all, options)
+    render json: PosterSerializer.new(posters, options)
   end
-
 
   def show
     posterById = Poster.find(params[:id])
