@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   post "/api/v1/posters", to: "api/v1/posters#create"
   delete "/api/v1/posters/:id", to: "api/v1/posters#destroy"
   patch "/api/v1/posters/:id", to: "api/v1/posters#update"
+  # get "/api/v1/posters?sort=desc", to: "api/v1/posters#index"
 end

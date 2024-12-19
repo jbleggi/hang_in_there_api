@@ -26,17 +26,6 @@ class Api::V1::PostersController < ApplicationController
   def create
     newPoster = Poster.new(poster_params)
 
-    # render json: {
-    #   type: "poster",
-    #   attributes: {
-    #     name: newPoster.name,
-    #     description: newPoster.description,
-    #     price: newPoster.price,
-    #     year: newPoster.year,
-    #     vintage: newPoster.vintage,
-    #     img_url: newPoster.img_url
-    #   }
-    # }
     if newPoster.save
       render json: {
         type: "poster",
