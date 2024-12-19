@@ -15,11 +15,31 @@ class Api::V1::PostersController < ApplicationController
           posters_array.push(poster)
         end
       end
-      posters = posters_array.sort_by {|poster| poster.name }
+      posters = posters_array.sort_by { |poster| poster.name }
+    end
+
+    if params[:max_price]
+      posters_array = [];
+      Poster.all.each do |poster|
+        if poster.price <= params[:max_price].to_f 
+          posters_array.push(poster)
+        end
+      end
+      posters = posters_array
+    end
+
+    if params[:min_price]
+      posters_array = [];
+      Poster.all.each do |poster|
+        if poster.price >= params[:min_price].to_f 
+          posters_array.push(poster)
+        end
+      end
+      posters = posters_array
     end
 
     options = {}
-    count = Poster.count
+    count = posters.count
     options[:meta] = { count: count }
     render json: PosterSerializer.new(posters, options)
   end

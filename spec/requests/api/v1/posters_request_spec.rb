@@ -226,7 +226,7 @@ describe "Posters API", type: :request do
     expect(Poster.minimum("created_at")).to eq(Poster.order("created_at desc").pluck(:created_at).last)  
   end
 
-  it "can specify a ‘name' query parameter" do   
+  it "can specify a 'name' query parameter" do   
     Poster.create!(
       "name": "TERRIBLE",
         "description": "It's too awful to look at.",
@@ -244,7 +244,7 @@ describe "Posters API", type: :request do
       "vintage": false,
       "img_url": "https://images.unsplash.com/photo-1485617359743-4dc5d2e53c89"
   )
-  
+
     get '/api/v1/posters?name=ter'
 
     expect(response).to be_successful    
@@ -254,5 +254,27 @@ describe "Posters API", type: :request do
 
     expect(sortedPosters.first.name).to eq('DISASTER')
     expect(sortedPosters.last.name).to eq('TERRIBLE')    
+  end
+
+  it "can return posters that meet the price threshold" do   
+    Poster.create!(
+      "name": "TERRIBLE",
+        "description": "It's too awful to look at.",
+        "price": 15.00,
+        "year": 2022,
+        "vintage": true,
+        "img_url": "https://unsplash.com/photos/low-angle-of-hacker-installing-malicious-software-on-data-center-servers-using-laptop-9nk2antk4Bw"
+    )
+
+    get '/api/v1/posters?max_price=20.00'
+
+    expect(response).to be_successful   
+    expect(Poster.all.where("price <= 20.00").count).to eq(1)
+    # require 'pry'; binding.pry
+
+    get '/api/v1/posters?min_price=2000.00'
+
+    expect(response).to be_successful   
+    expect(Poster.all.where("price >= 2000.00").count).to eq(0)  
   end
 end
