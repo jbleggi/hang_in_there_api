@@ -1,24 +1,5 @@
 class Api::V1::PostersController < ApplicationController
   def index
-    posters = Poster.all
-
-    render json: posters.map { |poster|
-      {
-        id: poster.id.to_s,
-        type: "poster",
-        attributes: {
-          name: poster.name,
-          description: poster.description,
-          price: poster.price,
-          year: poster.year,
-          vintage: poster.vintage,
-          img_url: poster.img_url
-        }
-      }
-    }
-  end
-
-  def index
     options = {}
     count = Poster.count
     options[:meta] = { count: count }
