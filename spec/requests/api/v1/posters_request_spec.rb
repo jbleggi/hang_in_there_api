@@ -1,6 +1,12 @@
 # bundle exec rspec ./spec/requests/api/v1/posters_request_spec.rb
 
 require 'rails_helper'
+require 'simplecov'
+SimpleCov.start 'rails'
+
+SimpleCov.add_filter '/app/channels/'
+SimpleCov.add_filter '/app/jobs/'
+SimpleCov.add_filter '/app/mailers/'
 
 describe "Posters API", type: :request do
   it "sends a list of posters" do
