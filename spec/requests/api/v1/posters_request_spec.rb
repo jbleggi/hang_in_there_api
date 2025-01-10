@@ -160,7 +160,7 @@ describe "Posters API", type: :request do
   end
 
   it "can sort by created_at, ascending" do
-    Poster.create!(
+    poster1 = Poster.create!(
       name: "DETERMINATION",
       description: "Persistence is the key to failure.",
       price: 99.00,
@@ -169,7 +169,7 @@ describe "Posters API", type: :request do
       img_url: "https://plus.unsplash.com/premium_photo-1679237489023-4d6b9f7e8292"
     )
 
-    Poster.create!(
+    poster2 = Poster.create!(
       name: "AMBITION",
       description: "The climb is always steeper than it looks.",
       price: 120.00,
@@ -178,7 +178,7 @@ describe "Posters API", type: :request do
       img_url: "https://plus.unsplash.com/premium_photo-1672340957102-ecb87429dbf1"
     )
 
-    Poster.create!(
+    poster3 = Poster.create!(
       name: "INSPIRATION",
       description: "Dreams are made to be unattainable.",
       price: 85.00,
@@ -190,11 +190,12 @@ describe "Posters API", type: :request do
     get '/api/v1/posters?sort=asc'
 
     expect(response).to be_successful
-    expect(Poster.maximum("created_at")).to eq(Poster.order("created_at asc").pluck(:created_at).last)  
+    # expect(Poster.maximum("created_at")).to eq(Poster.order("created_at asc").pluck(:created_at).last)  
+    expect(Poster.order("created_at asc")).to eq([poster1, poster2, poster3])
   end
 
   it "can sort by created_at, descending" do
-    Poster.create!(
+    poster1 = Poster.create!(
       name: "DETERMINATION",
       description: "Persistence is the key to failure.",
       price: 99.00,
@@ -203,7 +204,7 @@ describe "Posters API", type: :request do
       img_url: "https://plus.unsplash.com/premium_photo-1679237489023-4d6b9f7e8292"
     )
 
-    Poster.create!(
+    poster2 = Poster.create!(
       name: "AMBITION",
       description: "The climb is always steeper than it looks.",
       price: 120.00,
@@ -212,7 +213,7 @@ describe "Posters API", type: :request do
       img_url: "https://plus.unsplash.com/premium_photo-1672340957102-ecb87429dbf1"
     )
 
-    Poster.create!(
+    poster3 = Poster.create!(
       name: "INSPIRATION",
       description: "Dreams are made to be unattainable.",
       price: 85.00,
@@ -224,7 +225,8 @@ describe "Posters API", type: :request do
     get '/api/v1/posters?sort=desc'
 
     expect(response).to be_successful
-    expect(Poster.minimum("created_at")).to eq(Poster.order("created_at desc").pluck(:created_at).last)  
+    # expect(Poster.minimum("created_at")).to eq(Poster.order("created_at desc").pluck(:created_at).last) 
+    expect(Poster.order("created_at desc")).to eq([poster3, poster2, poster1])
   end
 
   it "can specify a 'name' query parameter" do   
