@@ -267,6 +267,15 @@ describe "Posters API", type: :request do
         "img_url": "https://unsplash.com/photos/low-angle-of-hacker-installing-malicious-software-on-data-center-servers-using-laptop-9nk2antk4Bw"
     )
 
+    Poster.create!(
+      name: "INSPIRATION",
+      description: "Dreams are made to be unattainable.",
+      price: 3000.00,
+      year: 2021,
+      vintage: false,
+      img_url: "https://plus.unsplash.com/premium_photo-1680273494857-a8bf4c7d10e5"
+    )
+
     get '/api/v1/posters?max_price=20.00'
 
     expect(response).to be_successful   
@@ -276,6 +285,6 @@ describe "Posters API", type: :request do
     get '/api/v1/posters?min_price=2000.00'
 
     expect(response).to be_successful   
-    expect(Poster.all.where("price >= 2000.00").count).to eq(0)  
+    expect(Poster.all.where("price >= 2000.00").count).to eq(1)  
   end
 end
