@@ -260,7 +260,7 @@ describe "Posters API", type: :request do
   end
 
   it "can return posters that meet the price threshold" do   
-    Poster.create!(
+    poster1 = Poster.create!(
       "name": "TERRIBLE",
         "description": "It's too awful to look at.",
         "price": 15.00,
@@ -269,7 +269,7 @@ describe "Posters API", type: :request do
         "img_url": "https://unsplash.com/photos/low-angle-of-hacker-installing-malicious-software-on-data-center-servers-using-laptop-9nk2antk4Bw"
     )
 
-    Poster.create!(
+    poster2 = Poster.create!(
       name: "INSPIRATION",
       description: "Dreams are made to be unattainable.",
       price: 3000.00,
@@ -279,14 +279,14 @@ describe "Posters API", type: :request do
     )
 
     get '/api/v1/posters?max_price=20.00'
-
+    data = JSON.parse(response.body, symbolize_names: true) # add JSON info
     expect(response).to be_successful   
-    expect(Poster.all.where("price <= 20.00").count).to eq(1)
-    # require 'pry'; binding.pry
+    expect(data[:data].count).to eq(1) # add JSON response 
+    # expect(Poster.all.where("price <= 20.00").count).to eq(1)
 
     get '/api/v1/posters?min_price=2000.00'
-
+    data = JSON.parse(response.body, symbolize_names: true) # add JSON info
     expect(response).to be_successful   
-    expect(Poster.all.where("price >= 2000.00").count).to eq(1)  
+    expect(data[:data].count).to eq(1) # add JSON response 
   end
 end
